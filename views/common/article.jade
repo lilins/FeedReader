@@ -1,0 +1,32 @@
+for item in rssList
+    .media
+        .media-left.mobile
+            if item.imageUrl!=null
+                a(href="#{item.imageUrl}")
+                    img.article_img.media-object(style="width: 100px; height: 100px;" src="#{item.imageUrl}")
+            else if item.rssMetum.imageUrl!=null
+                a(href="#{item.rssMetum.imageUrl}")
+                    img.article_img.media-object(style="width: 100px; height: 100px;" src="#{item.rssMetum.imageUrl}")
+            else
+                a
+                    img.article_img.media-object(style="width: 100px; height: 100px;" src="")
+        .media-body
+            h4.media-heading #{item.title}
+            .rss-content
+                - var x = item.summary
+                if x 
+                    .rss-summary.rss-overflow #{item.summary}
+                        a.btn.btn-link.hidesummary 收起
+                    a.btn.btn-link.btn-mini.showsummary 显示全部文字
+                //- else
+                    .rss-summary #{item.summary}
+                a.btn.btn-link.btn-mini(href="#{item.link}") 查看全文
+            .metainfo 作者 / #{item.author}
+            .metainfo 时间 / #{item.date}
+            .metainfo 来源 / 
+                a(href='/rsslist?id=#{item.rssMetum.rssListId}&page=1') #{item.rssMetum.title}
+    hr
+else
+    span 暂无相关资讯
+
+include page.jade

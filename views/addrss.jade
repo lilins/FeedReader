@@ -1,0 +1,21 @@
+extends common/layout
+
+block content
+    main
+        .container
+            .container-fluid
+                .row
+                    .col-md-12
+                        h3.media_title 上传RSS源
+                        hr
+                        form
+                            .form-group
+                                label(for="address") Rss地址
+                                input.form-control#add_url(type="text" placeholder="Rss地址")
+                                p.help-block#url_tips
+                            .form-group
+                                label(for="description") Rss简介（20个字内）
+                                input.form-control#add_description(type="text" placeholder="Rss简介（20个字内）")
+                                p.help-block#description_tips
+                            .btn.btn-default#add_btn(type="button") 上传
+                            p.help-block#submit_tips

@@ -1,0 +1,17 @@
+if item.updateState < 0
+    span.label.label-success.label-right 新增
+else if item.updateState == 0
+    span.label.label-success.label-right 获取成功
+else if item.updateState == 1
+    span.label.label-danger.label-right.error_tips(data-id="#{item.rssListId}"  data-link="#{item.rssLink}") 手动更新
+    span.label.label-danger.get_error.label-right 获取失败
+else if item.updateState == 2
+    span.label.label-danger.label-right.error_tips(data-id="#{item.rssListId}"  data-link="#{item.rssLink}") 手动更新
+    span.label.label-danger.get_error.label-right 网络错误
+else if item.updateState == 3
+    span.label.label-danger.label-right.error_tips(data-id="#{item.rssListId}"  data-link="#{item.rssLink}") 手动更新
+    span.label.label-danger.get_error.label-right 连接错误
+else if item.updateState == 4
+    span.label.label-danger.label-right.error_tips(data-id="#{item.rssListId}"  data-link="#{item.rssLink}") 手动更新
+    span.label.label-danger.get_error.label-right 解析错误
+else

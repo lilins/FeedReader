@@ -1,0 +1,31 @@
+.modal.fade#alter_panel(tabindex="-1" role="dialog")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+                h4.modal-title 修改RSS源
+            .modal-body
+                .form-group
+                    input.form-control#alter_url(type="text" placeholder="Rss地址" value="")
+                    br
+                    input.form-control#alter_description(type="text" placeholder="Rss简介（20个字内）" value="")
+                    a#alter_id(data-id="1")
+                span#alter_tips
+            .modal-footer
+                button#alter_cancel.btn.btn-default(type="button" data-dismiss="modal") 取消
+                button#alter_save.btn.btn-primary(type="button") 保存
+.modal.fade#delete_panel(tabindex="-1" role="dialog")
+    .modal-dialog(role="document")
+        .modal-content
+            .modal-header
+                button.close(type="button" data-dismiss="modal" aria-label="Close")
+                    span(aria-hidden="true") &times;
+                h4.modal-title 提示框
+            .modal-body
+                p 您确认要删除这个RSS源吗？
+                a#delete_id(data-id="1")
+                span#delete_tips
+            .modal-footer
+                button.btn.btn-default(type="button" data-dismiss="modal") 取消
+                button#delete_save.btn.btn-primary(type="button") 确认删除

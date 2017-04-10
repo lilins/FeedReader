@@ -1,0 +1,14 @@
+extends common/layout
+
+block content
+    main
+        .container
+            .container-fluid
+                .row
+                    .col-md-9
+                        h3.media_title 包含【#{keyword}】的资讯
+                        hr
+                        -var path = "/search?s="+keyword+"&page="
+                        include common/article.jade
+                    .col-md-3
+                        include common/siderbar.jade

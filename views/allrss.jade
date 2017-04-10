@@ -1,0 +1,43 @@
+extends common/layout
+
+block content
+    main
+        .container
+            .container-fluid
+                .row
+                    .col-md-9
+                        h3.media_title
+                            span.glyphicon.glyphicon-list-alt(aria-hidden="true")
+                            span 全部Rss源
+                        hr
+                        - var path = "./"
+                        for item in rssList
+                            .media(data-link="/rsslist?id="+item.rssListId+"&page=1")
+                            .media-left.mobile
+                                - var url = item.rssMetum.imageUrl!=null?item.rssMetum.imageUrl:""
+                                    a(href="#{url}")
+                                        img.media-object.article_img(src="#{url}")
+                            .media-body
+                                h4.media-heading
+                                    span.mobile_state #{item.description}
+                                    include common/state.jade
+                                    a.list_alter.mobile.btn.btn-link(data-id="#{item.rssListId}" data-toggle="modal" data-target="#alter_panel") 修改
+                                    a.list_delete.mobile.btn.btn-link(data-id="#{item.rssListId}" data-toggle="modal" data-target="#alter_panel") 删除
+                                .rss-content
+                                    p.rss-summary
+                                        span 【RSS地址】
+                                            span.hooklink #{item.rssLink}
+                                        span 【添加日期】#{item.date} 
+                                        span 【标题】#{item.rssMetum.title}
+                                        span 【描述】#{item.rssMetum.description}
+                                        span 【作者】#{item.rssMetum.author}
+                                        span 【日期】#{item.rssMetum.date}
+                                        span 【出版日期】#{item.rssMetum.pubdate}
+                                        span 【版权信息】#{item.rssMetum.copyright}
+                                        a.btn.btn-link(href="/rsslist?id="+item.rssListId+"&page=1") 查看该RSS源信息
+                            hr
+                        else
+                            span 暂无相关资讯
+                        include common/page.jade
+                    .col-md-3
+                        include common/siderbar.jade

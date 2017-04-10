@@ -1,0 +1,14 @@
+.navbar.navbar-inverse.navbar-fixed-top
+    .container
+        .navbar-header
+            a.navbar-brand(href="/") RSS
+        .mobile
+            div
+                form.navbar-form.navbar-left(role="search")
+                    .form-group
+                        input#keyword.form-control(type="text" placeholder="输入关键词")
+                    button#search_btn.btn.btn-default(type="button") 搜索
+            .navbar-collapse.collapse
+                form.navbar-form.navbar-right
+                    a.btn.btn-primary(href="/add") 上传RSS 
+script var rootpath = "";

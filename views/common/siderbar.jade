@@ -1,0 +1,9 @@
+h3.media_title 最新上传
+.list-group
+    for item in least
+        a.list-group-item(href="/rsslist?id=#{item.rssListId}&page=1") #{item.description}
+            include state.jade
+    else
+        a.list-group-item 暂无
+    a.list-group-item.list-group-item-info(href="/allrss?page=1") 查看所有Rss源
+

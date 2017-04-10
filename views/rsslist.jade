@@ -1,0 +1,50 @@
+extends common/layout
+
+block content
+    main
+        .container
+            .container-fluid
+                .row
+                    .col-md-9
+                        if confirmed==1&&state==0    
+                            h3.media_title 
+                                span 来自
+                                strong 【#{rssInfo.description}】
+                                span 的资讯
+                            hr
+                            - var path = '/rsslist?id='+rssInfo.rssListId+'&page='
+                            include common/article.jade
+                        else
+                            p 暂无相关讯息
+                    .col-md-3
+                        h3.media_title
+                            span.glyphicon.glyphicon-star(aria-hidden="true")
+                            span RSS源信息
+                        hr
+                        if confirmed==1&&state==0
+                            form
+                                p
+                                    strong RSS信息
+                                    - var item = rssInfo
+                                    include common/state.jade
+                                    a#single_alter.btn.btn-link.mobile(data-toggle="modal" data-target="#alter_panel" data-id="#{rssInfo.rssListId}" href="#") 修改
+                                    a#single_delete.btn.btn-link.mobile(data-toggle="modal" data-target="#delete_panel" data-id="#{rssInfo.rssListId}" href="#") 删除
+                                    br
+                                    span#src_url 地址：#{rssInfo.rssLink}
+                                    span#src_description 简介：#{rssInfo.description}
+                            hr
+                            p
+                            - var title = rssInfo.rssMetum.title==null?"":rssInfo.rssMetum.title
+                            - var description = rssInfo.rssMetum.description==null?"":rssInfo.rssMetum.description
+                            - var copyright = rssInfo.rssMetum.copyright==null?"":rssInfo.rssMetum.copyright
+                                strong Rss元信息
+                                br 
+                                span 标题：#{title}
+                                br 
+                                span 描述：#{description}
+                                br 
+                                span 版权：#{copyright}
+                            hr
+                        else
+                            p 暂无相关讯息
+                        include common/siderbar.jade

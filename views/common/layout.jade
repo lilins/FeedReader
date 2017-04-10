@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title=台湾News
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.css")
+    script(src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js")
+    script(src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    
+  body
+    div #{rootpath}
+    include header.jade
+    block content
+    include modal.jade
+    script(src="/javascripts/main.js")

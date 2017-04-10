@@ -1,0 +1,16 @@
+extends common/layout
+
+block content
+  main
+    .container
+      .container-fluid
+        .row
+          .col-md-9
+            h3.media_title
+              span.glyphicon.glyphicon-list-alt(aria-hidden="true")
+              span 全部资讯
+            hr
+            -var path = "?page=";
+            include common/article.jade
+          .col-md-3
+              include common/siderbar
