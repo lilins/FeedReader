@@ -707,8 +707,8 @@ module.exports = {
     rssList.findAll().then(function (result) {
       for (let i = 0; i < result.length; i++) {
         var option = result[i].rssLink;
-        for(var i=0;i<keywords.length;i++){
-            if(~option.indexOf(keywords[i])){
+        for(var j=0;j<keywords.length;j++){
+            if(~option.indexOf(keywords[j])){
               option = {
                 url: option,
                 proxy: proxy.host + ':' + proxy.port
