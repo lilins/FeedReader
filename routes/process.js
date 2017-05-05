@@ -3,6 +3,9 @@ var router = express.Router();
 var rss = require('../models/rss.js');
 var FeedParser = require('feedparser');
 var request = require('request'); // for fetching the feed
+var config = require('../config.js');
+var proxy = config.PROXY;
+var keywords = config.KEYWORDS;
 
 /* GET users listing. */
 router.post('/update', function (req, res, next) {
@@ -16,17 +19,19 @@ router.post('/update', function (req, res, next) {
 router.post('/upload', function (req, res, next) {
     var body = req.body,
         result = "",
-        white_list = "feedburner",
         feedparser = new FeedParser();
     new Promise((resolve, reject) => {
 
         let feedparser = new FeedParser();
-        if (body.link.indexOf(white_list) != -1) {
-            result = {
-                state: 0,
-                message: "x"
+        var option = body.link;
+        for(var i=0;i<keywords.length;i++){
+            if(~option.indexOf(keywords[i])){
+              result = {
+                    state: 0,
+                    message: "x"
+                }
+                resolve(result);
             }
-            resolve(result);
         }
         request(body.link).on('error', function (err) {
             result = {
