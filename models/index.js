@@ -404,7 +404,7 @@ var feedParser = function (rssLinkId, link, encode) {
 
 }
 
-
+module.exports = {
   /*
   * 按照时间降序，获取所有Article信息
   * @param start {number} 从第几个信息开始获取

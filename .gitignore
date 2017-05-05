@@ -38,6 +38,10 @@ jspm_packages
 
 # test
 rssTemp.js
+getrss-dev.js
 
 # configuration
 config.js
+
+# system
+.DS_Store

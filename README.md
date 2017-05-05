@@ -16,7 +16,16 @@ module.exports = {
         "username": ,
         "password": ,
         "port": 
-    }
+    },
+    //代理工具
+    "PROXY": {
+        "host": 'http://192.168.1.1',
+        "port": '8000'
+    },
+    //需要代理网站
+    "KEYWORDS": [
+        "google"
+    ]
 };
 ```
 

@@ -14,6 +14,10 @@ var request = require('request'); // for fetching the feed
 var CryptoJS = require("crypto-js");
 var iconv = require('iconv-lite');
 var mysql = require('../config.js').MYSQL;
+var config = require('../config.js');
+var mysql = config.MYSQL;
+var proxy = config.PROXY;
+var keywords = config.KEYWORDS;
 
 //sequelize数据库连接
 var sequelize = new Sequelize(mysql.schema, mysql.username, mysql.password, {
@@ -135,6 +139,39 @@ var rss2categories = sequelize.define('rss2categories', {
     timestamps: false
   });
 
+
+var htmlSource = sequelize.define('htmlSource', {
+  hSId: { type: Sequelize.STRING(32), primaryKey: true },
+  hSUrl: Sequelize.STRING,
+  hSContent: Sequelize.STRING,
+  hAContent_title: Sequelize.STRING,
+  hAContent_p: Sequelize.STRING,
+  hAContent_pic: Sequelize.STRING,
+  hAContent_date: Sequelize.STRING,
+  hAContent_author: Sequelize.STRING,
+  hSUrlHead: Sequelize.STRING,
+  hSEncoding: Sequelize.STRING
+}, {
+    // don't add the timestamp attributes (updatedAt, createdAt)
+    freezeTableName: true,
+    timestamps: false
+  });
+
+
+var htmlArticle = sequelize.define('htmlArticle', {
+  hAId: { type: Sequelize.STRING(32), primaryKey: true },
+  hSId: Sequelize.STRING(32),
+  hAUrl: Sequelize.STRING,
+  hATitle: Sequelize.STRING,
+  hAArticle: Sequelize.TEXT,
+  hAPic: Sequelize.TEXT,
+  hADate: Sequelize.BIGINT(14),
+  hAAuthor: Sequelize.STRING(50),
+}, {
+    // don't add the timestamp attributes (updatedAt, createdAt)
+    freezeTableName: true,
+    timestamps: false
+  });
 /*
 * 表的关系声明
 * List与Meta是一对一的关系
@@ -145,6 +182,8 @@ rssList.hasOne(rssMeta, { foreignKey: 'rssListId' });
 rssMeta.belongsTo(rssList, { foreignKey: 'rssListId' });
 rssArticle.belongsTo(rssMeta, { foreignKey: 'rssMetaId' });
 
+htmlSource.hasMany(htmlArticle, { foreignKey: "hSId" });
+htmlArticle.belongsTo(htmlSource, { foreignKey: "hSId" });
 
 /*
 * 当数据从feed取来后的处理方法：
@@ -536,14 +575,14 @@ module.exports = {
                   where: { rssMetaId: re.rssMetum.rssMetaId }
                 }).then(function (re) {
                   if (re) {
-                    return result={
-                      state:3,
-                      data:re
+                    return result = {
+                      state: 3,
+                      data: re
                     };
                   } else {
-                    return result={
-                      state:2,
-                      data:re
+                    return result = {
+                      state: 2,
+                      data: re
                     };
                   }
                 }).catch(function (err) {
@@ -551,9 +590,9 @@ module.exports = {
                 })
             )
           } else {
-            return result={
-              state:1,
-              data:re
+            return result = {
+              state: 1,
+              data: re
             };
           }
         }).then(function (data) {
@@ -573,7 +612,7 @@ module.exports = {
                 rssListId: id
               }
             });
-          } else if (data.state  == 2) {
+          } else if (data.state == 2) {
             rssMeta.destroy({
               where: {
                 rssMetaId: data.data.rssMetaId
@@ -584,7 +623,7 @@ module.exports = {
                 rssListId: id
               }
             });
-          } else if (data.state  == 1) {
+          } else if (data.state == 1) {
             rssList.destroy({
               where: {
                 rssListId: id
@@ -667,7 +706,17 @@ module.exports = {
   start() {
     rssList.findAll().then(function (result) {
       for (let i = 0; i < result.length; i++) {
-        feedParser(result[i].rssListId, result[i].rssLink, 'utf-8');
+        var option = result[i].rssLink;
+        for(var i=0;i<keywords.length;i++){
+            if(~option.indexOf(keywords[i])){
+              option = {
+                url: option,
+                proxy: proxy.host + ':' + proxy.port
+              };
+              break;
+            }
+        }
+        feedParser(result[i].rssListId, option, 'utf-8');
       }
     });
   },
@@ -679,5 +728,87 @@ module.exports = {
 
   singleget(id, link) {
     feedParser(id, link, 'utf-8');
+  },
+
+  getHtmlSource() {
+    return Promise.resolve(
+      htmlSource.findAll({
+        include: [{ model: htmlArticle }],
+        order:[[htmlArticle , 'hADate', 'DESC']]
+      }).then(function (re) {
+        return result = {
+          state: 0,
+          message: re
+        };
+      }).catch(function (err) {
+        return result = {
+          state: -1,
+          message: err
+        };
+      }));
+  },
+  getHtmlArticle() {
+    return Promise.resolve(
+      htmlArticle.findAndCountAll({
+        order:[['hADate', 'DESC']]
+      }).then(function (re) {
+        return result = {
+          state: 0,
+          message: re
+        };
+      }).catch(function (err) {
+        return result = {
+          state: -1,
+          message: err
+        };
+      }));
+  },
+  createHtmlSource(data) {
+    return Promise.resolve(
+      htmlSource.create({
+        hSId: CryptoJS.MD5(data.url).toString(),
+        hSUrl: data.url,
+        hSContent: data.hscontent || "",
+        hAContent_title: data.hacontenttitle || "",
+        hAContent_p: data.hacontentp || "",
+        hAContent_pic: data.hacontentpic || "",
+        hAContent_date: data.hacontentdate || "",
+        hAContent_author: data.hacontentauthor || "",
+        hSUrlHead: data.urlhead || "",
+        hSEncoding: data.encoding || "utf-8"
+      }).then(function (re) {
+        return result = {
+          state: 0,
+          message: re
+        };
+      }).catch(function (err) {
+        return result = {
+          state: -1,
+          message: err
+        };
+      }));
+  },
+  createHtmlArticle(data) {
+    return Promise.resolve(
+      htmlArticle.create({
+        hAId: CryptoJS.MD5(data.url).toString(),
+        hSId: data.hsid,
+        hAUrl: data.url,
+        hATitle: data.title || "",
+        hAArticle: data.article || "",
+        hAPic: data.pic || "",
+        hADate: data.date || "",
+        hAAuthor: data.author || "",
+      }).then(function (re) {
+        return result = {
+          state: 0,
+          message: re
+        };
+      }).catch(function (err) {
+        return result = {
+          state: -1,
+          message: err
+        };
+      }));
   }
 };
